@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}用户设置首页{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for("static",filename="css/info.css") }}">
+    <script src="{{ url_for('static',filename='js/info.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="row mt-4">
+        <div class="col"></div>
+        <div class="col">
+            <div class="avatar-wrapper">
+                <input type="file" id="imageFileInput"/>
+            </div>
+            <form id="userFrom" method="POST">
+                <div class="form-group">
+                    <label>设置邮箱</label>
+                    <input type="text" class="form-control" id="emailInput" name="email"/>
+                </div>
+                <div class="form-group">
+                    <label>设置昵称</label>
+                    <input type="text" class="form-control" id="usernameInput" name="username"/>
+                </div>
+                <div class="form-group">
+                    <label>设置密码</label>
+                    <input type="password" class="form-control" id="passwordInput" name="password"/><br>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block" id="confirmBtn">确认信息</button>
+                </div>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}
+

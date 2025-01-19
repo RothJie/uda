@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}全自由首页{% endblock %}
+
+{% block head %}
+	<link rel="stylesheet" href="{{ url_for("static",filename="css/index.css") }}">
+{% endblock %}
+
+{% block body %}
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"></div>
+        <div class="col-10">
+            <ul class="question-ul">
+                {% for question in questions %}
+                    <li>
+                        <div class="side-question">
+                            <img class="side-question-avatar" src="{{url_for("static",filename=question.author.avatar_url)}}" alt="">
+                        </div>
+                        <div class="question-main">
+                            <div class="question-title"><a href="{{ url_for("qa.qa_detail",qa_id = question.id)}}">{{ question.title }}</a></div>
+                            <div class="question-content">{{ question.content }}</div>
+                            <div class="question-detail">
+                                {% for status in status_total %}
+                                	{% if question.id == status.question_id %}
+                                		<img class="status-icon" src="{{ url_for("static",filename="icon/like_icon_filled.png") }}" alt="点赞图标">
+                                        <span class="question-liked like-icon" style="font-size: 15px">{{ status.like_t }}人</span>
+                                        <img class="status-icon" src="{{ url_for("static",filename="icon/comment_icon_filled.png") }}" alt="评论图标">
+                                        <span class="question-commented comment-icon" style="font-size: 15px">{{ status.comment_t }}人</span>
+                                        <img class="status-icon" src="{{ url_for("static",filename="icon/collect_icon_filled.png") }}" alt="收藏图标">
+                                        <span class="question-collected collect-icon" style="font-size: 15px">{{ status.collect_t }}人</span>
+                                	{% endif %}
+                                {% endfor %}
+
+                                <span class="question-author">{{ question.author.name }}</span>
+                                <span class="question-time">{{ question.create_time }}</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}
+
+

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/bootstrap.4.6.min.css') }} ">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/base.css') }}">
+    <script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/base.js') }}"></script>
+    <title>{% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">全自由问答</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for("qa.public_question") }}">发布问答</a>
+                </li>
+                <li class="nav-item ml-2">
+                    <form class="form-inline my-2 my-lg-0" method="GET" action="{{ url_for("qa.search") }}">
+                        <input class="form-control mr-sm-2" type="search" placeholder="关键字" aria-label="Search"
+                               name="q">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                    </form>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if user %}
+                    <div class="avatar-wrapper1">
+                        <img class="avatar-preview1" src="{{ url_for("static", filename=user.avatar_url) }}"  id="avatar-img"/>
+                    </div>
+                    <li class="nav-item">
+                        <a class="nav-link" id="quit_login_base" href="{{ url_for("auth.logout") }}">退出登录</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" id="login_btn" href="{{ url_for("auth.login") }}">登录</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    {% block body %}{% endblock %}
+</div>
+</body>
+</html>

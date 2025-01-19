@@ -1,0 +1,6 @@
+.not_account {
+    /* 设置为弹性布局 */
+    display: flex;
+    /* 使弹性项目靠右对齐 */
+    justify-content: flex-end;
+}

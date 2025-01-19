@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}全自由注册{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for("static",filename="css/info.css") }}">
+    <script src="{{ url_for('static',filename='js/register.js') }}"></script>
+{#    <script src="{{ url_for('static',filename='js/info.js') }}"></script>#}
+{% endblock %}
+
+{% block body %}
+    <div class="row mt-4">
+        <div class="col"></div>
+        <div class="col">
+            <div class="avatar-wrapper">
+                <input type="file" id="imageFileInput"/>
+            </div>
+            <div class="form-group">
+                    <label for="exampleInputEmail1">邮箱</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                           name="email" required>
+                    <div id="errorEmail1" style="align-items: flex-end;"></div>
+                </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">验证码</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="captcha" id="captcha-ipt">
+
+                    <div class="input-group-append">
+
+                        <button class="btn btn-outline-secondary" type="button" id="captcha-btn">获取验证码
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">用户名</label>
+                <input type="text" class="form-control" name="username" id="user_name_btn">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">密码</label>
+                <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">确认密码</label>
+                <input type="password" class="form-control" id="confirmPassword" name="password_confirm">
+            </div>
+            <div id="confirmPassword"></div>
+            <button type="submit" class="btn btn-primary btn-block" id="register-btn">立即注册</button>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}

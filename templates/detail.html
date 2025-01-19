@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}{{ question.title }}{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for("static",filename="css/detail.css") }}">
+    {#    <link rel="stylesheet" href="{{ url_for("static",filename="css/css/font-awesome.min.css") }}">#}
+{% endblock %}
+
+{% block body %}
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"></div>
+        <div class="col-10" style="background-color: #fff;padding: 20px;">
+            <h3 class="page-title">{{ question.title }}</h3>
+            <p class="question-info">
+                <span>作者：{{ question.author.name }}</span>
+                <span>时间：{{ question.create_time }}</span>
+            </p>
+            <hr>
+            <p class="question-content">{{ question.content }}</p>
+            <hr>
+            {% if g.user %}
+                <div class="action-container">
+                    <!-- 点赞按钮，使用本地图片 -->
+                    <span class="like">
+                    {% if status_data.isLiked == 1 %}
+                        <img src="{{ url_for("static",filename="icon/like_icon_filled.png") }}" alt="点赞图标">
+                    {% else %}
+                        <img src="{{ url_for("static",filename="icon/like_icon.png") }}" alt="点赞图标">
+                    {% endif %}
+
+                </span>
+                    <!-- 评论按钮，使用本地图片 -->
+                    <span class="comment">
+                    {% if status_data.isCommented ==1  %}
+                        <img src="{{ url_for("static",filename="icon/comment_icon_filled.png") }}" alt="评论图标">
+                    {% else %}
+                        <img src="{{ url_for("static",filename="icon/comment_icon.png") }}" alt="评论图标">
+                    {% endif %}
+                </span>
+                    <!-- 收藏按钮，使用本地图片 -->
+                    <span class="collect">
+                    {% if status_data.isCollected == 1 %}
+                        <img src="{{ url_for("static",filename="icon/collect_icon_filled.png") }}" alt="收藏图标">
+                    {% else %}
+                        <img src="{{ url_for("static",filename="icon/collect_icon_empty.png") }}" alt="收藏图标">
+                    {% endif %}
+                </span>
+                </div>
+            {% endif %}
+
+            <h4 class="comment-group-title">评论（{{ question.comments|length }}）：</h4>
+            <form action="{{ url_for("qa.public_comment") }}" method="post">
+                <div class="form-group">
+                    <input type="text" placeholder="请填写评论" name="content" id="commentInput" class="form-control">
+                    <input type="hidden" name="question_id" value="{{ question.id }}">
+                </div>
+                <div class="form-group" style="text-align: right;">
+                    <button class="btn btn-primary" style="text-align: right;">评论</button>
+                </div>
+            </form>
+            <ul class="comment-group">
+                {% for comment in question.comments %}
+                    <li>
+                        <div class="user-info">
+                            <img class="avatar" src="{{ url_for("static",filename=comment.author.avatar_url) }}" alt="">
+                            <span class="username">{{ comment.author.name }}</span>
+                            <span class="create-time">{{ comment.create_time }}</span>
+                        </div>
+                        <p class="comment-content">{{ comment.content }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col"></div>
+    </div>
+    <script>
+        const likeBtn = document.querySelector('.like');
+        const commentBtn = document.querySelector('.comment');
+        const collectBtn = document.querySelector('.collect');
+        const commentInput = document.getElementById('commentInput');
+
+        // 点赞按钮点击事件like_icon_filled.png
+        likeBtn.addEventListener('click', function () {
+            const img = this.querySelector('img');
+            // 用于存储点赞、评论、收藏状态，初始化为0表示未操作
+            let isLiked = 0;
+            if (img.src.endsWith('like_icon.png')) {
+                img.src = '{{ url_for("static",filename="icon/like_icon_filled.png") }}';
+                isLiked = 1;
+            } else {
+                img.src = '{{ url_for("static",filename="icon/like_icon.png") }}';
+                isLiked = 0;
+            }
+            {
+                const data = {
+                    user_id: {{ g.user.id }},
+                    question_id: {{ question.id }},
+                    isLiked: isLiked
+                };
+                fetch('{{ url_for("qa.status_data") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result.success) {
+                            console.error('发送状态数据失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('网络错误', error);
+                    });
+            }
+        });
+
+        // 评论按钮点击事件
+        commentBtn.addEventListener('click', function () {
+            const img = this.querySelector('img');
+            // 用于存储点赞、评论、收藏状态，初始化为0表示未操作
+            let isCommented = 0;
+            if (img.src.endsWith('comment_icon.png')) {
+                img.src = '{{ url_for("static",filename="icon/comment_icon_filled.png") }}';
+                isCommented = 1;
+            } else {
+                img.src = '{{ url_for("static",filename="icon/comment_icon.png") }}';
+                isCommented = 0;
+            }
+            // 点击评论按钮时，将光标聚焦到评论输入框
+            commentInput.focus();
+            {
+                const data = {
+                    user_id: {{ g.user.id }},
+                    question_id: {{ question.id }},
+                    isCommented: isCommented
+                };
+                fetch('{{ url_for("qa.status_data") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result.success) {
+                            console.error('发送状态数据失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('网络错误', error);
+                    });
+            }
+        });
+
+        // 收藏按钮点击事件
+        collectBtn.addEventListener('click', function () {
+            const img = this.querySelector('img');
+            // 用于存储点赞、评论、收藏状态，初始化为0表示未操作
+            let isCollected = 0;
+            if (img.src.endsWith('collect_icon_empty.png')) {
+                img.src = '{{ url_for("static",filename="icon/collect_icon_filled.png") }}';
+                isCollected = 1;
+            } else {
+                img.src = '{{ url_for("static",filename="icon/collect_icon_empty.png") }}';
+                isCollected = 0;
+            }
+            {
+                const data = {
+                    user_id: {{ g.user.id }},
+                    question_id: {{ question.id }},
+                    isCollected: isCollected
+                };
+                fetch('{{ url_for("qa.status_data") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (!result.success) {
+                            console.error('发送状态数据失败');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('网络错误', error);
+                    });
+            }
+        });
+    </script>
+{% endblock %}
